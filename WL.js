@@ -554,7 +554,7 @@ exports.WL = {
 		if (data.item) return data.item;
 		return false;
 	},
-	itemData: JSON.parse(FS('config/SGGame/items.json').readIfExistsSync()),
+	itemData: loadItemData(),
 	getItem: function (id) {
 		id = toId(id);
 		if (!this.itemData[id]) return false;
@@ -876,4 +876,14 @@ function showDailyRewardAni(streak) {
 		output += "<img src='http://i.imgur.com/ZItWCLB.png' width='16' height='16'> ";
 	}
 	return output;
+}
+
+function loadItemData(){
+	let data = JSON.parse(FS('config/SGGame/items.json').readIfExistsSync());
+	let items = Dex.data.Items;
+	for(let item in items){
+		if(items[item].isNonstandard) continue;
+		data[item] = {name: items[item].name, id: item, slot: items[item].isBerry ? 'berries' : 'items'};
+	}
+	return data;
 }
